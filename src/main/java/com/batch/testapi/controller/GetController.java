@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 @RestController
@@ -16,13 +17,13 @@ public class GetController {
    // http://localhost:8080/main/v1/check
    // {{testApi}}/main/v1/check
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GetController.class);
+    private final Logger logger = LoggerFactory.getLogger(GetController.class);
 
 
-    @RequestMapping(value = "/check", method = RequestMethod.GET)
+    @GetMapping(value = "/check")
     public String getHello(@RequestParam(name = "version", required = false) String version){
-        LOGGER.info(version);
-        LOGGER.info("getHello 메소드가 호출되었습니다.");
+        logger.info(version);
+        logger.info("getHello 메소드가 호출되었습니다.");
         return "check version";
     }
 
@@ -37,16 +38,15 @@ public class GetController {
 
 
     @GetMapping("/treemap")
-    public TreeMap<Integer, String> treemapTest() {
+    public SortedMap<Integer, String> treemapTest() {
 
         TreeMap<Integer, String> treeMap = new TreeMap<>();
 
         for(int i = 20 ; i >0; i-=2 ){
             treeMap.put(i, i + "value");
         }
-        // LOGGER.info(treeMap.toString());
 
-        return treeMap; // Automatically serialized to JSON
+        return treeMap;
     }
 
 }
