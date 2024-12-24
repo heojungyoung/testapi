@@ -49,4 +49,80 @@ public class GetController {
         return treeMap;
     }
 
+
+    static int n;
+    static int[][] distance;
+
+    @GetMapping("/kebin")
+    public int kebin(){
+        return kebinTest();
+    }
+
+    public static int kebinTest() {
+
+        n = 5;           // 유저 수
+        // m = 5;           // 친구 관계 수 addEdge 5개로 현재 사용하지 않는 변수
+
+        // distance 배열 초기화
+        distance = new int[n + 1][n + 1];
+        basicData(n);
+
+        // 친구 관계(간선) 고정값(예시)
+        // 여기서 (s, e)가 친구 관계이므로 거리 1로 설정하고 양방향으로 저장
+
+        addEdge(1, 3);
+        addEdge(1, 4);
+        addEdge(4, 5);
+        addEdge(4, 3);
+        addEdge(3, 2);
+
+        // 플로이드–워셜 알고리즘
+        for (int k = 1; k <= n; k++) {
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= n; j++) {
+                    if (distance[i][j] > distance[i][k] + distance[k][j]) {
+                        distance[i][j] = distance[i][k] + distance[k][j];
+                    }
+                }
+            }
+        }
+
+        // 케빈 베이컨의 수(각 유저가 갖는 최단 거리의 합) 계산 후 최솟값 찾기
+        int minValue = Integer.MAX_VALUE;
+        int answer = -1;
+        for (int i = 1; i <= n; i++) {
+            int sum = 0;
+            for (int j = 1; j <= n; j++) {
+                sum += distance[i][j];
+            }
+            if (sum < minValue) {
+                minValue = sum;
+                answer = i;
+            }
+        }
+
+       return answer;
+    }
+
+    // 친구 관계(간선) 추가를 위한 메서드
+    private static void addEdge(int s, int e) {
+        distance[s][e] = 1;
+        distance[e][s] = 1;
+    }
+
+
+    private static void basicData(int n){
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (i == j) {
+                    distance[i][j] = 0;
+                } else {
+                    distance[i][j] = 10000001;  // 충분히 큰 수로 초기화(무한대)
+                }
+            }
+        }
+
+    }
+
 }
