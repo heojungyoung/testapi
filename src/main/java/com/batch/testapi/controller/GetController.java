@@ -104,13 +104,6 @@ public class GetController {
        return answer;
     }
 
-    // 친구 관계(간선) 추가를 위한 메서드
-    private static void addEdge(int s, int e) {
-        distance[s][e] = 1;
-        distance[e][s] = 1;
-    }
-
-
     private static void basicData(int n){
 
         for (int i = 1; i <= n; i++) {
@@ -124,5 +117,12 @@ public class GetController {
         }
 
     }
+
+    // 친구 관계(간선) 추가를 위한 메서드
+    private static void addEdge(int s, int e) {
+        distance[s][e] = 1;
+        distance[e][s] = 1;
+    }
+
 
 }
