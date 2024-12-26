@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/main/v1")
@@ -124,5 +125,30 @@ public class GetController {
         distance[e][s] = 1;
     }
 
+
+
+    @GetMapping("/lambdaTest")
+    public Map<String, Integer> lambdaTest() {
+
+        Map<String, Integer> originalMap = new HashMap<>();
+        originalMap.put("apple", 3);
+        originalMap.put("banana", 5);
+        originalMap.put("cherry", 7);
+        originalMap.put("avocado", 4);
+
+        // 'a'로 시작하는 키만 필터링하여 새로운 Map 생성
+        Map<String, Integer> filteredMap = originalMap.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith("a") || entry.getKey().endsWith("y"))  // 키가 'a'로 시작하는 항목만 필터링
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,  // 기존 키 유지
+                        Map.Entry::getValue  // 기존 값 유지
+                ));
+
+        // 결과 출력
+        filteredMap.forEach((key, value) ->  logger.info(" key : {}, value : {}",  key ,value));
+
+        return filteredMap;
+
+    }
 
 }
