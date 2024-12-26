@@ -135,6 +135,8 @@ public class GetController {
         originalMap.put("banana", 5);
         originalMap.put("cherry", 7);
         originalMap.put("avocado", 4);
+        originalMap.put("box", 2);
+        originalMap.put("orange", 1);
 
         // 'a'로 시작하는 키만 필터링하여 새로운 Map 생성
         Map<String, Integer> filteredMap = originalMap.entrySet().stream()
