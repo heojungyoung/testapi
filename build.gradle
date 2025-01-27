@@ -34,6 +34,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
+    implementation platform("software.amazon.awssdk:bom:2.26.25")
+    implementation "software.amazon.awssdk:s3"
+    implementation "software.amazon.awssdk:auth"
+
 }
 
 tasks.named('test') {
