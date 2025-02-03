@@ -1,26 +1,33 @@
 package com.batch.testapi.controller;
 
+import com.batch.testapi.redis.RedisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/main/v1")
 public class GetController {
 
-   // -Dspring.profiles.active=test
-
-   // http://localhost:8080/main/v1/check
-   // {{testApi}}/main/v1/check
-
     private final Logger logger = LoggerFactory.getLogger(GetController.class);
 
+    private final RedisRepository redisRepository;
+
+    public GetController(RedisRepository redisRepository ){
+        this.redisRepository = redisRepository;
+    }
+
     @GetMapping(value = "/check")
-    @Cacheable(key = "#version", value = "svcsupport")
     public String getHello(@RequestParam(name = "version", required = false) String version){
+
+        try {
+            redisRepository.getHello(version);
+        } catch (Exception ignored){
+            logger.error("redis error");
+        }
+
         logger.info(version);
-        logger.info("getHello 메소드가 호출되었습니다.");
+        logger.info("redis fail or success");
         return "check version";
     }
 }
