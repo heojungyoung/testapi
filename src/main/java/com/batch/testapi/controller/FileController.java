@@ -53,23 +53,24 @@ public class FileController {
 
         Region region = Region.AP_NORTHEAST_2;
 
-        S3Client s3Client = S3Client.builder()
+        try (S3Client s3Client = S3Client.builder()
                 .region(region)
                 .credentialsProvider(ProfileCredentialsProvider.create("default"))
-                .build();
+                .build()) {
 
-        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(keyName)
-                .build();
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(keyName)
+                    .build();
 
-        s3Client.putObject(
-                putObjectRequest,
-                RequestBody.fromFile(Paths.get(resource.getFile().getAbsolutePath()))
-        );
+            s3Client.putObject(
+                    putObjectRequest,
+                    RequestBody.fromFile(Paths.get(resource.getFile().getAbsolutePath()))
+            );
+
+        }
 
         logger.info("upload a S3 ->  {} / {} ", bucketName , keyName);
-
         return "ok";
     }
 
