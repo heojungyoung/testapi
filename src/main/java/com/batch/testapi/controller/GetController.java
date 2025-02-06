@@ -2,12 +2,12 @@ package com.batch.testapi.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -150,6 +150,21 @@ public class GetController {
         filteredMap.forEach((key, value) ->  logger.info(" key : {}, value : {}",  key ,value));
 
         return filteredMap;
+
+    }
+
+    @GetMapping("/sortTest")
+    public List<String> sortTest() {
+
+        List<String> list = Arrays.asList("Java", "Lambda", "Expression", "Example");
+        // 람다식을 사용한 Comparator 구현
+        list.sort(String::compareTo);
+
+        for (String s : list) {
+            logger.info(s);
+        }
+
+        return list;
 
     }
 
