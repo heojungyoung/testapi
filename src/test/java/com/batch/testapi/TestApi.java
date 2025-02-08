@@ -1,16 +1,16 @@
 package com.batch.testapi;
 
+import com.batch.testapi.controller.GenericController;
 import com.batch.testapi.controller.GetController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = GetController.class)
+@WebMvcTest(controllers = {GetController.class, GenericController.class})
 class TestApi {
 
     // -Dspring.profiles.active=test
@@ -42,8 +42,11 @@ class TestApi {
                 .andExpect(status().isOk());
     }
 
-
-
+    @Test
+    void genTest() throws Exception {
+        mockMvc.perform(get("/main/gen/gen"))
+                .andExpect(status().isOk());
+    }
 }
 
 
