@@ -34,6 +34,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
@@ -42,7 +43,7 @@ public class RedisConfig {
     RedisCacheManager cacheManager(RedisTemplate<String, Object> template) {
         RedisCacheManager redisCacheManager = RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(Objects.requireNonNull(template.getConnectionFactory()))
-                .cacheDefaults(getCacheConfigurationWithTtl(template)) // 모든 캐시에 대해 기본 설정 적용
+                .cacheDefaults(getLegacyCacheConfigurationWithTtl(template)) // 모든 캐시에 대해 기본 설정 적용
                 .build();
         redisCacheManager.setTransactionAware(true);
         return redisCacheManager;
@@ -54,6 +55,16 @@ public class RedisConfig {
                 .defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getValueSerializer()))
+                .disableCachingNullValues()
+                .entryTtl(Duration.ofSeconds(160));
+    }
+
+
+    private RedisCacheConfiguration getLegacyCacheConfigurationWithTtl(RedisTemplate<String, Object> template) {
+        return RedisCacheConfiguration
+                .defaultCacheConfig()
+                // .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
+                // .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
                 .disableCachingNullValues()
                 .entryTtl(Duration.ofSeconds(160));
     }

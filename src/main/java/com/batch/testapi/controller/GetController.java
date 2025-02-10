@@ -22,8 +22,8 @@ public class GetController {
 
         try {
             redisRepository.getHello(version);
-        } catch (Exception ignored){
-            logger.error("redis error");
+        } catch (Exception e){
+            logger.error("redis error {}" , e.getMessage());
         }
 
         logger.info(version);
