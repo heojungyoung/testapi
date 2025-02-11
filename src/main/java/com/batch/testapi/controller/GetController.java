@@ -34,7 +34,7 @@ public class GetController {
         }
 
         logger.info(version);
-        logger.info("redis fail or success");
+
         return "check version";
     }
 
