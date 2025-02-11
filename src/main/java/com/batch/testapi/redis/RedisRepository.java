@@ -11,13 +11,15 @@ public class RedisRepository {
 
     private final Logger logger = LoggerFactory.getLogger(RedisRepository.class);
 
-    @Cacheable(key = "#version", value = "svcsupport")
+    @Cacheable(key = "#version", value = "svcSupport")
     public String getHello(@RequestParam(name = "version", required = false) String version){
         logger.info(version);
         logger.info("getHello 메소드가 호출되었습니다.");
 
         return "cntr";
     }
+
+
 
 
 }

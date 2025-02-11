@@ -49,24 +49,16 @@ public class RedisConfig {
         return redisCacheManager;
     }
 
-
-    private RedisCacheConfiguration getCacheConfigurationWithTtl(RedisTemplate<String, Object> template) {
-        return RedisCacheConfiguration
-                .defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getValueSerializer()))
-                .disableCachingNullValues()
-                .entryTtl(Duration.ofSeconds(160));
-    }
-
-
     private RedisCacheConfiguration getLegacyCacheConfigurationWithTtl(RedisTemplate<String, Object> template) {
         return RedisCacheConfiguration
                 .defaultCacheConfig()
-                // .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
-                // .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
+                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
+                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(template.getStringSerializer()))
                 .disableCachingNullValues()
-                .entryTtl(Duration.ofSeconds(160));
+                .entryTtl(Duration.ofSeconds(7600));
     }
+
+
+
 
 }
