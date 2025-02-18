@@ -6,8 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/main/v1")
@@ -62,6 +65,25 @@ public class GetController {
 
     }
 
+
+    @GetMapping(value = "/delLikeRedis")
+    public void delLikeDataByPipeline() {
+
+        Set<String> vv = stringRedisTemplate.keys("svcSupport::*");
+
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            StringRedisConnection stringRedisConnection = (StringRedisConnection) connection;
+            if (!ObjectUtils.isEmpty(vv)) {
+                for (String key : vv) {
+                    stringRedisConnection.del(key);
+                    logger.info("{} del redis " , key);
+                }
+            }
+            return null;
+        });
+
+
+    }
 
 
 }
