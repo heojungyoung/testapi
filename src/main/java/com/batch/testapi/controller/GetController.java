@@ -3,13 +3,14 @@ package com.batch.testapi.controller;
 import com.batch.testapi.redis.RedisRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisKeyCommands;
 import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.*;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -19,13 +20,13 @@ public class GetController {
     private final Logger logger = LoggerFactory.getLogger(GetController.class);
 
     private final RedisRepository redisRepository;
+    private final StringRedisTemplate stringRedisTemplate;
 
-    public GetController(RedisRepository redisRepository ){
+    public GetController(RedisRepository redisRepository,StringRedisTemplate stringRedisTemplate ){
         this.redisRepository = redisRepository;
+        this.stringRedisTemplate = stringRedisTemplate;
     }
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping(value = "/check")
     public String getHello(@RequestParam(name = "version", required = false) String version){
@@ -85,5 +86,34 @@ public class GetController {
 
     }
 
+
+
+    @GetMapping(value = "/scanRedis")
+    public void scanByPipeline() {
+
+        Set<byte[]> keysToDelete = new HashSet<>();
+        stringRedisTemplate.execute((RedisCallback<Object>) connection -> {
+            ScanOptions scanOptions = ScanOptions.scanOptions()
+                    .match("svcSupport::*")
+                    .count(1000)
+                    .build();
+
+            try (Cursor<byte[]> cursor = ((RedisKeyCommands) connection).scan(scanOptions)) {
+                while (cursor.hasNext()) {
+                    keysToDelete.add(cursor.next());
+                }
+            }
+            return null;
+        });
+
+        stringRedisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            StringRedisConnection stringRedisConnection = (StringRedisConnection) connection;
+            for (byte[] key : keysToDelete) {
+                String keyStr = new String(key, StandardCharsets.UTF_8);
+                stringRedisConnection.del(keyStr);
+            }
+            return null;
+        });
+    }
 
 }
